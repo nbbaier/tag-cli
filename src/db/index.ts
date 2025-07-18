@@ -1,29 +1,26 @@
 import { Database } from "bun:sqlite";
-import { join } from "path";
-import { mkdirSync } from "fs";
-import { homedir } from "os";
-import type { Tag, Directory } from "../types/models.js";
+import { mkdirSync } from "node:fs";
+import { homedir } from "node:os";
+import { join } from "node:path";
+import type { Directory, Tag } from "../types/models";
 
 function getStatePath(appName: string): string {
   const xdgStateHome = process.env.XDG_STATE_HOME;
-  const stateDir = xdgStateHome 
+  const stateDir = xdgStateHome
     ? join(xdgStateHome, appName)
-    : join(homedir(), '.local', 'state', appName);
-  
-  // Ensure directory exists
+    : join(homedir(), ".local", "state", appName);
+
   mkdirSync(stateDir, { recursive: true });
-  
-  return join(stateDir, 'data.db');
+
+  return join(stateDir, "data.db");
 }
 
 export function openDB(): Database {
-  const dbPath = getStatePath('tag');
+  const dbPath = getStatePath("tag");
   const db = new Database(dbPath);
-  
-  // Enable foreign keys
+
   db.run("PRAGMA foreign_keys = ON");
-  
-  // Execute schema - embedded as string to avoid file system dependencies
+
   const schema = `
 -- Tags table
 CREATE TABLE IF NOT EXISTS tags (
@@ -55,37 +52,54 @@ CREATE INDEX IF NOT EXISTS idx_dir_tags_dir ON directory_tags(dir_id);
 CREATE INDEX IF NOT EXISTS idx_directories_path ON directories(path);
 CREATE INDEX IF NOT EXISTS idx_tags_name ON tags(name);
   `;
-  
-  // Split by semicolon and execute each statement
-  const statements = schema.split(';').filter(stmt => stmt.trim());
+
+  const statements = schema.split(";").filter((stmt) => stmt.trim());
   for (const statement of statements) {
     if (statement.trim()) {
       db.run(statement);
     }
   }
-  
+
   return db;
 }
 
-// Prepared statements for common operations
 export function createDbHelpers(db: Database) {
-  // Prepare all statements
-  const insertTagStmt = db.prepare("INSERT INTO tags (name, description) VALUES (?, ?)");
+  const insertTagStmt = db.prepare(
+    "INSERT INTO tags (name, description) VALUES (?, ?)",
+  );
   const findTagByNameStmt = db.prepare("SELECT * FROM tags WHERE name = ?");
   const findTagByIdStmt = db.prepare("SELECT * FROM tags WHERE id = ?");
   const getAllTagsStmt = db.prepare("SELECT * FROM tags ORDER BY name");
-  const updateTagStmt = db.prepare("UPDATE tags SET name = ?, description = ? WHERE id = ?");
+  const updateTagStmt = db.prepare(
+    "UPDATE tags SET name = ?, description = ? WHERE id = ?",
+  );
   const deleteTagStmt = db.prepare("DELETE FROM tags WHERE name = ?");
-  
-  const insertDirectoryStmt = db.prepare("INSERT INTO directories (path) VALUES (?)");
-  const findDirectoryByPathStmt = db.prepare("SELECT * FROM directories WHERE path = ?");
-  const findDirectoryByIdStmt = db.prepare("SELECT * FROM directories WHERE id = ?");
-  const getAllDirectoriesStmt = db.prepare("SELECT * FROM directories ORDER BY path");
-  const deleteDirectoryStmt = db.prepare("DELETE FROM directories WHERE path = ?");
-  
-  const insertDirectoryTagStmt = db.prepare("INSERT INTO directory_tags (dir_id, tag_id) VALUES (?, ?)");
-  const deleteDirectoryTagStmt = db.prepare("DELETE FROM directory_tags WHERE dir_id = ? AND tag_id = ?");
-  const deleteAllDirectoryTagsStmt = db.prepare("DELETE FROM directory_tags WHERE dir_id = ?");
+
+  const insertDirectoryStmt = db.prepare(
+    "INSERT INTO directories (path) VALUES (?)",
+  );
+  const findDirectoryByPathStmt = db.prepare(
+    "SELECT * FROM directories WHERE path = ?",
+  );
+  const findDirectoryByIdStmt = db.prepare(
+    "SELECT * FROM directories WHERE id = ?",
+  );
+  const getAllDirectoriesStmt = db.prepare(
+    "SELECT * FROM directories ORDER BY path",
+  );
+  const deleteDirectoryStmt = db.prepare(
+    "DELETE FROM directories WHERE path = ?",
+  );
+
+  const insertDirectoryTagStmt = db.prepare(
+    "INSERT INTO directory_tags (dir_id, tag_id) VALUES (?, ?)",
+  );
+  const deleteDirectoryTagStmt = db.prepare(
+    "DELETE FROM directory_tags WHERE dir_id = ? AND tag_id = ?",
+  );
+  const deleteAllDirectoryTagsStmt = db.prepare(
+    "DELETE FROM directory_tags WHERE dir_id = ?",
+  );
   const getDirectoryTagsStmt = db.prepare(`
     SELECT t.* FROM tags t 
     JOIN directory_tags dt ON t.id = dt.tag_id 
@@ -113,7 +127,7 @@ export function createDbHelpers(db: Database) {
     deleteTag: (name: string) => {
       return deleteTagStmt.run(name);
     },
-    
+
     // Directories - typed wrapper functions
     insertDirectory: (path: string) => {
       return insertDirectoryStmt.run(path);
@@ -130,7 +144,7 @@ export function createDbHelpers(db: Database) {
     deleteDirectory: (path: string) => {
       return deleteDirectoryStmt.run(path);
     },
-    
+
     // Directory Tags - typed wrapper functions
     insertDirectoryTag: (dirId: number, tagId: number) => {
       return insertDirectoryTagStmt.run(dirId, tagId);

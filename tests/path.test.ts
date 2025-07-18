@@ -1,12 +1,12 @@
-import { describe, it, expect, beforeAll, afterAll } from "bun:test";
-import { canonical, validateDirectory } from "../src/util/path.js";
-import { mkdirSync, rmSync, writeFileSync } from "fs";
-import { join } from "path";
-import { tmpdir } from "os";
+import { afterAll, beforeAll, describe, expect, it } from "bun:test";
+import { mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { canonical, validateDirectory } from "../src/util/path";
 
 describe("Path utilities", () => {
   const testDir = join(tmpdir(), `tag-cli-path-test-${Date.now()}`);
-  
+
   beforeAll(() => {
     mkdirSync(testDir, { recursive: true });
   });
@@ -14,9 +14,7 @@ describe("Path utilities", () => {
   afterAll(() => {
     try {
       rmSync(testDir, { recursive: true });
-    } catch {
-      // Ignore cleanup errors
-    }
+    } catch {}
   });
 
   describe("canonical", () => {
@@ -33,13 +31,15 @@ describe("Path utilities", () => {
     });
 
     it("should throw for non-existent paths", () => {
-      expect(() => canonical("/non/existent/path")).toThrow("Path does not exist");
+      expect(() => canonical("/non/existent/path")).toThrow(
+        "Path does not exist",
+      );
     });
 
     it("should throw for files (not directories)", () => {
       const filePath = join(testDir, "test-file.txt");
       writeFileSync(filePath, "test content");
-      
+
       expect(() => canonical(filePath)).toThrow("Path is not a directory");
     });
   });
@@ -50,14 +50,18 @@ describe("Path utilities", () => {
     });
 
     it("should throw for non-existent directory", () => {
-      expect(() => validateDirectory("/non/existent")).toThrow("Directory does not exist");
+      expect(() => validateDirectory("/non/existent")).toThrow(
+        "Directory does not exist",
+      );
     });
 
     it("should throw for files", () => {
       const filePath = join(testDir, "another-file.txt");
       writeFileSync(filePath, "test");
-      
-      expect(() => validateDirectory(filePath)).toThrow("Path is not a directory");
+
+      expect(() => validateDirectory(filePath)).toThrow(
+        "Path is not a directory",
+      );
     });
   });
 });

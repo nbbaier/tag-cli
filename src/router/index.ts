@@ -1,10 +1,9 @@
-import { initTRPC } from '@trpc/server';
-import type { Database } from 'bun:sqlite';
-import { openDB, createDbHelpers, type DbHelpers } from '../db/index.js';
-import { tagsRouter } from './tags.js';
-import { dirsRouter } from './dirs.js';
+import type { Database } from "bun:sqlite";
+import { initTRPC } from "@trpc/server";
+import { createDbHelpers, type DbHelpers, openDB } from "../db/index";
+import { dirsRouter } from "./dirs";
+import { tagsRouter } from "./tags";
 
-// Create context type
 export type Context = {
   db: Database;
   helpers: DbHelpers;
