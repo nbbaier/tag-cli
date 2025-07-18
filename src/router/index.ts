@@ -1,6 +1,8 @@
 import { initTRPC } from '@trpc/server';
 import type { Database } from 'bun:sqlite';
 import { openDB, createDbHelpers, type DbHelpers } from '../db/index.js';
+import { tagsRouter } from './tags.js';
+import { dirsRouter } from './dirs.js';
 
 // Create context type
 export type Context = {
@@ -20,7 +22,9 @@ const t = initTRPC.context<Context>().create();
 // Export router creation for use in sub-routers
 export { t };
 
-// Placeholder router - will be completed when we add tag and directory routers
-export const rootRouter = t.router({});
+export const rootRouter = t.router({
+  tags: tagsRouter,
+  dir: dirsRouter,
+});
 
 export type RootRouter = typeof rootRouter;
