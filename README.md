@@ -1,6 +1,6 @@
 # Tag CLI
 
-A TypeScript CLI tool for organizing development projects by tagging directories. Built with [tRPC-CLI](https://github.com/mmkal/trpc-cli) and Bun. The entire codebase was vibe coded with [Sourcegraph's](https://github.com/sourcegraph) [Amp](https://ampcode.code).
+A TypeScript CLI tool for organizing development projects by tagging directories. Built with [tRPC-CLI](https://github.com/mmkal/trpc-cli) and Bun. The entire codebase was vibe coded with [Sourcegraph's](https://github.com/sourcegraph) [Amp](https://ampcode.com).
 
 ## Features
 
