@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 
 import { createCli } from "trpc-cli";
 import { createContext, rootRouter } from "./router/index";

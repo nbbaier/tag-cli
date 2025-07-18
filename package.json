@@ -4,10 +4,11 @@
   "description": "A CLI tool for organizing development projects by tagging directories",
   "type": "module",
   "bin": {
-    "tag": "./dist/cli.js"
+    "tag": "./dist/tag"
   },
   "scripts": {
-    "build": "bun build src/cli.ts --outdir dist --target bun",
+    "build": "bun build src/cli.ts --outfile dist/tag --target bun --compile",
+    "install": "bun run scripts/install.ts",
     "dev": "bun run src/cli.ts",
     "test": "bun test",
     "typecheck": "bun --bun tsc --noEmit",
