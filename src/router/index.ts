@@ -19,9 +19,6 @@ export function createContext(): Context {
 
 const t = initTRPC.context<Context>().create();
 
-// Export router creation for use in sub-routers
-export { t };
-
 export const rootRouter = t.router({
   tags: tagsRouter,
   dir: dirsRouter,

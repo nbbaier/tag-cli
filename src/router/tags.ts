@@ -1,10 +1,11 @@
-import { TRPCError } from '@trpc/server';
+import { initTRPC, TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import type { Database } from 'bun:sqlite';
 import type { DbHelpers } from '../db/index.js';
 import { formatTagList, success } from '../util/output.js';
 import type { Tag } from '../types/models.js';
-import { t } from './index.js';
+
+const t = initTRPC.context<{ db: Database; helpers: DbHelpers }>().create();
 
 export const tagsRouter = t.router({
   create: t.procedure
