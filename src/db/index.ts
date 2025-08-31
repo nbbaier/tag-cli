@@ -1,19 +1,6 @@
 import { Database } from "bun:sqlite";
-import { mkdirSync } from "node:fs";
-import { homedir } from "node:os";
-import { join } from "node:path";
-import type { Directory, Tag } from "../types/models";
-
-function getStatePath(appName: string): string {
-  const xdgStateHome = process.env.XDG_STATE_HOME;
-  const stateDir = xdgStateHome
-    ? join(xdgStateHome, appName)
-    : join(homedir(), ".local", "state", appName);
-
-  mkdirSync(stateDir, { recursive: true });
-
-  return join(stateDir, "data.db");
-}
+import type { Directory, Tag } from "@/types";
+import { getStatePath } from "@/utils/path";
 
 export function openDB(): Database {
   const dbPath = getStatePath("tag");
@@ -101,8 +88,8 @@ export function createDbHelpers(db: Database) {
     "DELETE FROM directory_tags WHERE dir_id = ?",
   );
   const getDirectoryTagsStmt = db.prepare(`
-SELECT t.* FROM tags t 
-JOIN directory_tags dt ON t.id = dt.tag_id 
+SELECT t.* FROM tags t
+JOIN directory_tags dt ON t.id = dt.tag_id
 WHERE dt.dir_id = ?
 ORDER BY t.name
 `);
