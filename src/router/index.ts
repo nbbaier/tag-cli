@@ -1,26 +1,20 @@
-import type { Database } from "bun:sqlite";
 import { initTRPC } from "@trpc/server";
-import { createDbHelpers, type DbHelpers, openDB } from "../db/index";
+import type { BunSQLiteDatabase } from "drizzle-orm/bun-sqlite";
+import type { DbDrizzleHelpers } from "@/db/db";
+import type * as schema from "@/db/schema";
 import { dirsRouter } from "./dirs";
-import { tagsRouter } from "./tags";
+import { drizzleTagsRouter } from "./tags";
 
 export type Context = {
-  db: Database;
-  helpers: DbHelpers;
+  db: BunSQLiteDatabase<typeof schema>;
+  helpers: DbDrizzleHelpers;
 };
 
-// Create context function
-export function createContext(): Context {
-  const db = openDB();
-  const helpers = createDbHelpers(db);
-  return { db, helpers };
-}
+export const t = initTRPC.context<Context>().create();
 
-const t = initTRPC.context<Context>().create();
-
-export const rootRouter = t.router({
-  tags: tagsRouter,
+export const drizzleRouter = t.router({
+  tags: drizzleTagsRouter,
   dir: dirsRouter,
 });
 
-export type RootRouter = typeof rootRouter;
+export type DrizzleRouter = typeof drizzleRouter;
