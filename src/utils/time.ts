@@ -15,7 +15,15 @@ export function getRelativeTimeString(date: Date | string): string {
   if (now.getDate() < then.getDate()) {
     diffMonths -= 1;
   }
-  const diffYears = Math.floor(diffDays / 365);
+  // More accurate calculation of years difference
+  let diffYears = now.getFullYear() - then.getFullYear();
+  // Adjust if the current date hasn't reached the anniversary yet
+  if (
+    now.getMonth() < then.getMonth() ||
+    (now.getMonth() === then.getMonth() && now.getDate() < then.getDate())
+  ) {
+    diffYears--;
+  }
 
   if (diffSeconds < 60) {
     return "just now";
