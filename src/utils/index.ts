@@ -1,4 +1,3 @@
-import { TRPCError } from "@trpc/server";
 import { error as errorLog } from "./format";
 
 /**
