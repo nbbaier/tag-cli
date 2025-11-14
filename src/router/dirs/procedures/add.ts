@@ -38,7 +38,6 @@ const add = t.procedure
       const dirId = dirResult?.id as number;
 
       if (input[1].tags && input[1].tags.length > 0) {
-        console.log(input[1].tags);
         for (const tagName of input[1].tags) {
           const tag = (await ctx.helpers.findTagByName(tagName))[0];
           if (!tag) {
