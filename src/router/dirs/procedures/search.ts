@@ -125,8 +125,6 @@ const search = t.procedure
         input.any,
       );
 
-      console.log(directoriesWithTags);
-
       return directoriesWithTags;
     } catch (err) {
       throw new TRPCError({
