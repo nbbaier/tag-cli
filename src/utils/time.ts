@@ -10,7 +10,11 @@ export function getRelativeTimeString(date: Date | string): string {
   const diffHours = Math.floor(diffMinutes / 60);
   const diffDays = Math.floor(diffHours / 24);
   const diffWeeks = Math.floor(diffDays / 7);
-  const diffMonths = Math.floor(diffDays / 30);
+  // Calculate the number of full months between 'then' and 'now'
+  let diffMonths = (now.getFullYear() - then.getFullYear()) * 12 + (now.getMonth() - then.getMonth());
+  if (now.getDate() < then.getDate()) {
+    diffMonths -= 1;
+  }
   const diffYears = Math.floor(diffDays / 365);
 
   if (diffSeconds < 60) {
