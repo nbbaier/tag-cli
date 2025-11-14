@@ -4,6 +4,11 @@ import { join, resolve } from "node:path";
 import replaceHomeDir from "replace-homedir";
 
 /**
+ * Default state directory path relative to home directory
+ */
+const DEFAULT_STATE_DIR_PATH = join(".local", "state", "tag-cli");
+
+/**
  * Resolves a path to its canonical absolute form
  */
 export function canonical(path: string): string {
@@ -39,8 +44,7 @@ export function validateDirectory(path: string): void {
  */
 export function getStateDir(): string {
   const stateDir =
-    process.env.XDG_STATE_HOME ||
-    join(homedir(), ".local", "state", "tag-cli");
+    process.env.XDG_STATE_HOME || join(homedir(), DEFAULT_STATE_DIR_PATH);
 
   if (!existsSync(stateDir)) {
     mkdirSync(stateDir, { recursive: true });
