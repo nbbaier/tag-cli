@@ -33,9 +33,11 @@ export const drizzleTagsRouter = drizzleT.router({
         success(`Created tag '${input.name}'`);
         return { success: true, name: input.name };
       } catch (err) {
-        if (err instanceof Error) {
-          console.error(err.message);
-        }
+        if (err instanceof TRPCError) throw err;
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: `Failed to create tag: ${err instanceof Error ? err.message : String(err)}`,
+        });
       }
     }),
 

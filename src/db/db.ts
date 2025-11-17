@@ -1,7 +1,7 @@
 import { Database } from "bun:sqlite";
 import { and, eq } from "drizzle-orm";
 import { type BunSQLiteDatabase, drizzle } from "drizzle-orm/bun-sqlite";
-import { getStatePath } from "../util/path";
+import { getStatePath } from "@/utils/path";
 
 import * as schema from "./schema";
 

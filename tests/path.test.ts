@@ -2,7 +2,7 @@ import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { canonical, validateDirectory } from "../src/util/path";
+import { canonical, validateDirectory } from "../src/utils/path";
 
 describe("Path utilities", () => {
   const testDir = join(tmpdir(), `tag-cli-path-test-${Date.now()}`);

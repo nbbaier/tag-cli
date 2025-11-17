@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import type { Directory, DirectoryWithTags, Tag } from "../types/models";
+import type { Directory, DirectoryWithTags, Tag } from "@/types";
 
 export function formatTag(tag: Tag): string {
   const name = chalk.cyan(tag.name);
