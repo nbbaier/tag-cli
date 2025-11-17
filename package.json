@@ -27,7 +27,6 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@cliffy/table": "npm:@jsr/cliffy__table@1.0.0-rc.8",
     "@faker-js/faker": "^10.0.0",
     "@inkjs/ui": "^2.0.0",
     "@libsql/client": "^0.15.15",

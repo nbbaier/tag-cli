@@ -1,14 +1,16 @@
 export interface Tag {
   id: number;
   name: string;
-  description?: string;
-  created_at: string;
+  description: string | null;
+  rowCreatedAt: Date | null;
+  rowUpdatedAt: Date | null;
 }
 
 export interface Directory {
   id: number;
   path: string;
-  created_at: string;
+  rowCreatedAt: Date | null;
+  rowUpdatedAt: Date | null;
 }
 
 export interface DirectoryWithTags extends Directory {
@@ -16,6 +18,8 @@ export interface DirectoryWithTags extends Directory {
 }
 
 export interface DirectoryTag {
-  dir_id: number;
-  tag_id: number;
+  dirId: number;
+  tagId: number;
+  rowCreatedAt: Date | null;
+  rowUpdatedAt: Date | null;
 }

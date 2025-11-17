@@ -1,4 +1,4 @@
-import { Table } from "@cliffy/table";
+import Table from "cli-table";
 import chalk from "chalk";
 import type { DirectoryWithTags, Tag } from "@/types";
 import { capitalizeFirstLetter, filterUndefined } from "@/utils";
@@ -14,11 +14,11 @@ export type DirectoryListOptions = {
 };
 
 type FilteredDir = {
-  id: string | undefined;
+  id?: string;
   path: string;
   tags: string;
-  created: string | undefined;
-  updated: string | undefined;
+  created?: string;
+  updated?: string;
 };
 
 export const DirectoryList = (
@@ -26,60 +26,61 @@ export const DirectoryList = (
   options: DirectoryListOptions = {},
 ) => {
   const finalOptions = { relativeTime: true, ...options };
-  const includedFields = ["path", "tags"];
 
-  if (finalOptions?.created) {
-    includedFields.push("rowCreatedAt");
-  }
+  const filteredDirs = dirs.map((d) => {
+    const tagString = d.tags
+      .map((tag: Tag) => chalk.cyan(tag.name))
+      .join(", ");
 
-  if (finalOptions?.updated) {
-    includedFields.push("rowUpdatedAt");
-  }
+    const result: FilteredDir = {
+      path: chalk.green(replaceHomedir(d.path)),
+      tags:
+        finalOptions?.header || false
+          ? tagString || chalk.gray("no tags")
+          : chalk.gray(`[${tagString || chalk.gray("no tags")}]`),
+    };
 
-  if (finalOptions?.id) {
-    includedFields.push("id");
-  }
+    if (finalOptions?.id) {
+      result.id = d.id ? chalk.yellow(String(d.id)) : undefined;
+    }
 
-  const filteredDirs: FilteredDir[] = dirs
-    .map((d) =>
-      Object.fromEntries(
-        Object.entries(d).filter(([key]) => includedFields.includes(key)),
-      ),
-    )
-    .map((d) => {
-      const tagString = d.tags
-        .map((tag: Tag) => chalk.cyan(tag.name))
-        .join(", ");
-      return {
-        id: d.id ? chalk.yellow(d.id) : undefined,
-        path: chalk.green(replaceHomedir(d.path)),
-        tags:
-          finalOptions?.header || false
-            ? tagString || chalk.gray("no tags")
-            : chalk.gray(`[${tagString || chalk.gray("no tags")}]`),
-        created: d.rowCreatedAt
-          ? formatTime(d.rowCreatedAt, "created", finalOptions)
-          : undefined,
-        updated: d.rowUpdatedAt
-          ? formatTime(d.rowUpdatedAt, "updated", finalOptions)
-          : undefined,
-      };
-    })
-    .map((d) => filterUndefined<string | undefined>(d)) as FilteredDir[];
+    if (finalOptions?.created && d.rowCreatedAt) {
+      result.created = formatTime(
+        new Date(d.rowCreatedAt),
+        "created",
+        finalOptions,
+      );
+    }
 
-  const table = new Table();
+    if (finalOptions?.updated && d.rowUpdatedAt) {
+      result.updated = formatTime(
+        new Date(d.rowUpdatedAt),
+        "updated",
+        finalOptions,
+      );
+    }
 
-  if (finalOptions?.header) {
-    table.header(
-      Object.keys(filteredDirs[0] || {}).map((f) =>
+    return filterUndefined(result) as FilteredDir;
+  });
+
+  const headers = finalOptions?.header
+    ? Object.keys(filteredDirs[0] || {}).map((f) =>
         chalk.bold(capitalizeFirstLetter(f)),
-      ),
-    );
-  }
+      )
+    : undefined;
 
-  table.body(filteredDirs.map((d) => Object.values(d)));
-  table.padding(2);
-  table.align("left");
+  const table = new Table({
+    head: headers,
+    colAligns: ["left"],
+    style: {
+      head: [],
+      border: [],
+    },
+  });
+
+  for (const dir of filteredDirs) {
+    table.push(Object.values(dir));
+  }
 
   return table;
 };
