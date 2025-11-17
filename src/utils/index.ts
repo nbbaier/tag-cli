@@ -23,6 +23,24 @@ export function capitalizeFirstLetter(str: string): string {
 /**
  * Filters out undefined values from an array
  */
-export function filterUndefined<T>(arr: (T | undefined)[]): T[] {
-  return arr.filter((item): item is T => item !== undefined);
+export function filterUndefined<T>(arr: (T | undefined)[]): T[];
+/**
+ * Filters out undefined values from an object
+ */
+export function filterUndefined<T extends Record<string, unknown>>(
+  obj: T,
+): Partial<T>;
+export function filterUndefined<T>(
+  input: (T | undefined)[] | Record<string, unknown>,
+): T[] | Partial<T> {
+  if (Array.isArray(input)) {
+    return input.filter((item): item is T => item !== undefined);
+  }
+  const result: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(input)) {
+    if (value !== undefined) {
+      result[key] = value;
+    }
+  }
+  return result as Partial<T>;
 }
