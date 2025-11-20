@@ -66,5 +66,5 @@ export function getStatePath(filename = "tag.db"): string {
  * Replaces the home directory in a path with a tilde
  */
 export function replaceHomedir(path: string): string {
-  return replaceHomeDir(path, "~");
+  return replaceHomeDir(path);
 }

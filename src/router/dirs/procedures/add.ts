@@ -2,7 +2,6 @@ import { initTRPC } from "@trpc/server";
 import chalk from "chalk";
 import z from "zod";
 import type { Context } from "@/router";
-import type { Tag } from "@/types";
 import { handleError } from "@/utils";
 import { error, success } from "@/utils/format";
 import { canonical } from "@/utils/path";
@@ -41,7 +40,7 @@ const add = t.procedure
         for (const tagName of input[1].tags) {
           const tag = (await ctx.helpers.findTagByName(tagName))[0];
           if (!tag) {
-            let newTag: Tag | undefined;
+            let newTag: { id: number; name: string } | undefined;
             try {
               newTag = (await ctx.helpers.insertTag(tagName, null))[0];
               if (newTag) {

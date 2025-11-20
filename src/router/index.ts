@@ -19,11 +19,9 @@ export const createContext = (): Context => {
 
 export const t = initTRPC.context<Context>().create();
 
-export const drizzleRouter = t.router({
+export const rootRouter = t.router({
   tags: drizzleTagsRouter,
   dir: dirsRouter,
 });
 
-export const rootRouter = drizzleRouter;
-
-export type DrizzleRouter = typeof drizzleRouter;
+export type DrizzleRouter = typeof rootRouter;

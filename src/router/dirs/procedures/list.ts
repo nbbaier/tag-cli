@@ -37,10 +37,24 @@ const list = t.procedure
       }
 
       const directoriesWithTags = await Promise.all(
-        directories.map(async (dir) => ({
-          ...dir,
-          tags: await ctx.helpers.getDirectoryTags(dir.id),
-        })),
+        directories.map(async (dir) => {
+          const tags = await ctx.helpers.getDirectoryTags(dir.id);
+          return {
+            id: dir.id,
+            path: dir.path,
+            created_at: dir.rowCreatedAt
+              ? dir.rowCreatedAt.toISOString()
+              : new Date().toISOString(),
+            tags: tags.map((tag) => ({
+              id: tag.id,
+              name: tag.name,
+              description: tag.description || undefined,
+              created_at: tag.rowCreatedAt
+                ? tag.rowCreatedAt.toISOString()
+                : new Date().toISOString(),
+            })),
+          };
+        }),
       );
 
       const options: DirectoryListOptions = {

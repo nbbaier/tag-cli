@@ -1,5 +1,5 @@
-import Table from "cli-table";
 import chalk from "chalk";
+import Table from "cli-table";
 import type { DirectoryWithTags, Tag } from "@/types";
 import { capitalizeFirstLetter, filterUndefined } from "@/utils";
 import { replaceHomedir } from "@/utils/path";
@@ -28,9 +28,7 @@ export const DirectoryList = (
   const finalOptions = { relativeTime: true, ...options };
 
   const filteredDirs = dirs.map((d) => {
-    const tagString = d.tags
-      .map((tag: Tag) => chalk.cyan(tag.name))
-      .join(", ");
+    const tagString = d.tags.map((tag: Tag) => chalk.cyan(tag.name)).join(", ");
 
     const result: FilteredDir = {
       path: chalk.green(replaceHomedir(d.path)),
