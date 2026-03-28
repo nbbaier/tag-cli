@@ -42,16 +42,14 @@ const list = t.procedure
           return {
             id: dir.id,
             path: dir.path,
-            created_at: dir.rowCreatedAt
-              ? dir.rowCreatedAt.toISOString()
-              : new Date().toISOString(),
+            rowCreatedAt: dir.rowCreatedAt,
+            rowUpdatedAt: dir.rowUpdatedAt,
             tags: tags.map((tag) => ({
               id: tag.id,
               name: tag.name,
-              description: tag.description || undefined,
-              created_at: tag.rowCreatedAt
-                ? tag.rowCreatedAt.toISOString()
-                : new Date().toISOString(),
+              description: tag.description,
+              rowCreatedAt: tag.rowCreatedAt,
+              rowUpdatedAt: tag.rowUpdatedAt,
             })),
           };
         }),
